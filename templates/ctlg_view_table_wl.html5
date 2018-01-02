@@ -1,0 +1,61 @@
+<tr class="row_<?= ( $this->entityIndex[0] ? $this->entityIndex[0] -1 : 0 ) ?><?= $this->cssClass ?>">
+
+    <?php $intIndex = 0; ?>
+
+    <?php foreach( $this->activeTableColumns as $strColumnName ): ?>
+
+        <?php if ( is_string( $this->{$strColumnName} ) ): ?>
+            <td class="col_<?= $intIndex++ ?> <?= $strColumnName ?>"><?= $this->{$strColumnName}; ?></td>
+            <?php continue; ?>
+        <?php endif; ?>
+
+        <?php if ( is_array( $this->{$strColumnName} ) ): ?>
+            <td class="col_<?= $intIndex++ ?> <?= $strColumnName ?>"><?= implode( ', ', $this->{$strColumnName} ); ?></td>
+            <?php continue; ?>
+        <?php endif; ?>
+
+        <td>-</td>
+
+    <?php endforeach; ?>
+
+    <?php if ( $this->catalogUseWishlist ): ?>
+        <td class="col_<?= $intIndex++; ?> more">
+            <form method="GET" enctype="application/x-www-form-urlencoded">
+                <label for="ctlg_wishlist_id_<?= $intIndex ?>_amount">Anzahl</label>
+                <input type="text" name="ctlg_wishlist_amount_<?= $intIndex ?>" id="ctlg_wishlist_id_<?= $intIndex ?>_amount">
+                <button name="ctlg_add_to_wishlist" >Zur Merkliste hinzufügen</button>
+            </form>
+        </td>
+    <?php endif; ?>
+
+    <?php if( $this->masterUrl ): ?>
+        <td class="col_<?= $intIndex++; ?> more"><a href="<?= $this->masterUrl; ?>" title="<?= $this->title; ?>"><?= $this->readMore; ?></a></td>
+    <?php endif; ?>
+
+    <?php if ( $this->hasOperations && is_array( $this->operations ) ): ?>
+        <td class="col_<?= $intIndex++; ?> operations">
+            <div class="ctlg_operations">
+                <?php foreach( $this->operations as $arrOperation ): ?>
+                    <a href="<?= $arrOperation['href']; ?>" title="<?= $arrOperation['title']; ?>" <?= $arrOperation['attributes']; ?>><?= $arrOperation['image']; ?></a>
+                <?php endforeach; ?>
+            </div>
+        </td>
+    <?php endif; ?>
+
+    <?php if ( !empty( $this->relations ) && is_array( $this->relations ) ): ?>
+        <td class="col_<?= $intIndex++; ?> related">
+            <div class="ctlg_relations">
+                <?php foreach( $this->relations as $arrRelation ): ?>
+                    <a href="<?= $arrRelation['href']; ?>" title="<?= $arrRelation['description']; ?>"><?= $arrRelation['image']; ?></a>
+                <?php endforeach; ?>
+            </div>
+        </td>
+    <?php endif; ?>
+
+    <?php if ( $this->useSocialSharingButtons ): ?>
+        <td class="col_<?= $intIndex++; ?> social_sharing_buttons">
+            <?= $this->socialSharingButtons; ?>
+        </td>
+    <?php endif; ?>
+
+</tr>
