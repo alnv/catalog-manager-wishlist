@@ -9,8 +9,8 @@ ClassLoader::addClasses([
 
 TemplateLoader::addFiles([
 
-    'ctlg_view_table_wl' => 'system/modules/catalog-manager-wishlist/templates',
-    'ctlg_view_teaser_wl' => 'system/modules/catalog-manager-wishlist/templates',
-    'mod_catalog_table_wl' => 'system/modules/catalog-manager-wishlist/templates',
-    'mod_catalog_universal_wl' => 'system/modules/catalog-manager-wishlist/templates'
+    'ctlg_view_table' => 'system/modules/catalog-manager-wishlist/templates',
+    'ctlg_view_teaser' => 'system/modules/catalog-manager-wishlist/templates',
+    'mod_catalog_table' => 'system/modules/catalog-manager-wishlist/templates',
+    'mod_catalog_universal' => 'system/modules/catalog-manager-wishlist/templates'
 ]);
