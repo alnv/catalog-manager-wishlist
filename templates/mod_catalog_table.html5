@@ -11,7 +11,7 @@
 
 <?php $intIndex = 0; ?>
 
-<div class="ctlg_table">
+<div class="ctlg_table<?= $this->wishlistCss; ?>">
     <table>
         <?php if ( !empty( $this->createOperation ) && is_array( $this->createOperation ) ): ?>
             <caption><a href="<?= $this->createOperation['href'] ?>"><?= $this->createOperation['image']; ?><span><?= $this->createOperation['title']; ?></span></a></caption>
