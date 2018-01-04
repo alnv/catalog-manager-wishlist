@@ -1,0 +1,24 @@
+<?php foreach( $this->data as $strTable => $arrData ): ?>
+
+    <p><?= $strTable ?></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Titel</th>
+                <th>Anzahl</th>
+                <th>Zur Detailansicht</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach( $arrData['rows'] as $arrRow ): ?>
+                <tr>
+                    <td><?= $arrRow['title'] ?></td>
+                    <td><?= $arrRow['wishlistAmountValue'] ?></td>
+                    <td><?= $arrRow['alias'] ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+<?php endforeach; ?>
