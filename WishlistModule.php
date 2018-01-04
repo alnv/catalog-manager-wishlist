@@ -5,7 +5,7 @@ namespace CMWishlist;
 use CatalogManager\CatalogController;
 use CatalogManager\Toolkit;
 
-class CatalogViewWishlist extends CatalogController {
+class WishlistModule extends CatalogController {
 
 
     protected $blnUseWishlist = false;
@@ -22,11 +22,25 @@ class CatalogViewWishlist extends CatalogController {
     public function initialize( &$objCatalogView ) {
 
         $this->blnUseWishlist = $objCatalogView->wishlistWidget ? true : false;
+
         $objCatalogView->objMainTemplate->useWishlist = $this->blnUseWishlist;
+        $objCatalogView->objMainTemplate->wishlistCss = $objCatalogView->wishlistEnableFilter ? ' filtered-wishlist' : '';
 
         if ( $this->blnUseWishlist && \Input::get('wishlist_type') ) {
 
             if ( !$this->validateInput() ) return null;
+
+            $objSession = \Session::getInstance();
+            $arrTables = $objSession->get('wishlist_tables');
+
+            if ( !is_array( $arrTables ) ) $arrTables = [];
+
+            if ( \Input::get('wishlist_table') && !in_array( \Input::get('wishlist_table'), $arrTables ) ) {
+
+                $arrTables[] = \Input::get('wishlist_table');
+            }
+
+            $objSession->set( 'wishlist_tables', $arrTables );
 
             switch ( \Input::get('wishlist_type') ) {
 
@@ -52,12 +66,12 @@ class CatalogViewWishlist extends CatalogController {
 
         if ( $this->blnUseWishlist ) {
 
-            $arrCss = [];
+            $strCss = '';
             $strAmountValue = '1';
             $blnInWishlist = false;
 
             $objSession = \Session::getInstance();
-            $arrSession = $objSession->get( $objCatalogView->catalogTablename );
+            $arrSession = $objSession->get( 'wishlist_' . $objCatalogView->catalogTablename );
 
             if ( !Toolkit::isEmpty( $arrSession ) ) {
 
@@ -69,12 +83,12 @@ class CatalogViewWishlist extends CatalogController {
                 if ( isset( $arrSession['ids'] ) && in_array( $arrCatalog['id'], $arrSession['ids'] ) ) {
 
                     $blnInWishlist = true;
-                    $arrCss[] = ' added-to-wishlist';
+                    $strCss .= ' added-to-wishlist';
                 }
             }
 
+            $arrCatalog['wishlistCss'] = $strCss;
             $arrCatalog['isInWishlist'] = $blnInWishlist;
-            $arrCatalog['wishlistCss'] = implode( ',', $arrCss );
             $arrCatalog['wishlistAmountValue'] = $strAmountValue;
 
             $arrCatalog['wishlistAddButton'] = true;
@@ -96,20 +110,17 @@ class CatalogViewWishlist extends CatalogController {
         if ( !$objCatalogView->wishlistEnableFilter ) return $arrQuery;
 
         $objSession = \Session::getInstance();
-        $arrSession = $objSession->get( $objCatalogView->catalogTablename );
+        $arrSession = $objSession->get( 'wishlist_' . $objCatalogView->catalogTablename );
 
-        if ( !Toolkit::isEmpty( $arrSession ) ) {
+        if ( Toolkit::isEmpty( $arrSession ) ) $arrSession = [ 'ids' => ['0'] ];
+        if ( !isset( $arrSession['ids'] ) || empty( $arrSession['ids'] ) ) $arrSession['ids'] = ['0'];
 
-            if ( is_array( $arrSession['ids'] ) && !empty( $arrSession['ids'] ) ) {
+        $arrQuery['where'][] = [
 
-                $arrQuery['where'][] = [
-
-                    'field' => 'id',
-                    'operator' => 'contain',
-                    'value' => $arrSession['ids']
-                ];
-            }
-        }
+            'field' => 'id',
+            'operator' => 'contain',
+            'value' => $arrSession['ids']
+        ];
 
         return $arrQuery;
     }
@@ -118,14 +129,14 @@ class CatalogViewWishlist extends CatalogController {
     protected function addToWishlist() {
 
         $objSession = \Session::getInstance();
-        $objSession->set( \Input::get('wishlist_table'), $this->getWishlistData() );
+        $objSession->set( 'wishlist_' . \Input::get('wishlist_table'), $this->getWishlistData() );
     }
 
 
     protected function removeFromWishlist() {
 
         $objSession = \Session::getInstance();
-        $arrSession = $objSession->get( \Input::get('wishlist_table') );
+        $arrSession = $objSession->get( 'wishlist_' . \Input::get('wishlist_table') );
 
         if ( !Toolkit::isEmpty( $arrSession ) ) {
 
@@ -140,7 +151,7 @@ class CatalogViewWishlist extends CatalogController {
                 unset( $arrSession['ids'][ $intKey ] );
             }
 
-            $objSession->set( \Input::get('wishlist_table'), $arrSession );
+            $objSession->set( 'wishlist_' . \Input::get('wishlist_table'), $arrSession );
         }
     }
 
@@ -172,7 +183,7 @@ class CatalogViewWishlist extends CatalogController {
         $arrIds = [];
         $arrAmounts = [];
         $objSession = \Session::getInstance();
-        $arrSession = $objSession->get( \Input::get('wishlist_table') );
+        $arrSession = $objSession->get( 'wishlist_' . \Input::get('wishlist_table') );
 
         if ( !Toolkit::isEmpty( $arrSession ) ) {
 
