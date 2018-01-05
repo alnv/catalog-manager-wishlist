@@ -11,7 +11,7 @@
 
 <?php $intIndex = 0; ?>
 
-<div class="ctlg_table<?= $this->wishlistCss; ?>">
+<div class="ctlg_table">
     <table>
         <?php if ( !empty( $this->createOperation ) && is_array( $this->createOperation ) ): ?>
             <caption><a href="<?= $this->createOperation['href'] ?>"><?= $this->createOperation['image']; ?><span><?= $this->createOperation['title']; ?></span></a></caption>
@@ -22,7 +22,7 @@
                 <th class="head_<?= $intIndex++ ?> <?= $strColumnName ?>"><?= $this->catalogFields[ $strColumnName ]['title'] ? $this->catalogFields[ $strColumnName ]['title'] : $strColumnName;  ?></th>
             <?php endforeach; ?>
             <?php if ( $this->useWishlist ): ?>
-                <th>Wunschliste</th>
+                <th><?= $this->wishlistLabel; ?></th>
             <?php endif; ?>
             <?php if ( !$this->catalogDisableMasterLink ): ?>
                 <th class="head_<?= $intIndex++ ?> more"><?= $this->readMoreColumnTitle; ?></th>
