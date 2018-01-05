@@ -1,5 +1,8 @@
 <?php
 
-$GLOBALS['TL_LANG']['tl_module']['wishlistAmount'] = [ 'Anzahl-Eingabefeld', 'Hier können Sie ein Eingabefeld für die Anzahl einbinden.' ];
-$GLOBALS['TL_LANG']['tl_module']['wishlistWidget'] = [ 'Wunschliste verwenden', 'Hier können Sie die Daten in eine Wunschliste eintragen.' ];
-$GLOBALS['TL_LANG']['tl_module']['wishlistDisableRemoveButton'] = [ 'Entfernen-Button deaktivieren', 'Hier können Sie den entfernen Button deaktivieren.' ];
+$GLOBALS['TL_LANG']['tl_module']['wishlist_legend'] = 'Wunschliste-Einstellungen';
+
+$GLOBALS['TL_LANG']['tl_module']['wishlistEnableFilter'] = [ 'Wunschliste Filtern', 'Es werden nur vom Benutzer ausgewählte Einträge angezeigt.' ];
+$GLOBALS['TL_LANG']['tl_module']['wishlistAmount'] = [ 'Anzahl verwenden', 'Die Benutzer können eine bestimmte Anzahl zur Wunschliste hinzufügen.' ];
+$GLOBALS['TL_LANG']['tl_module']['wishlistWidget'] = [ 'Wunschliste verwenden', 'Die Benutzer können Einträge zu Ihrer persönlichen Wunschliste hinzufügen.' ];
+$GLOBALS['TL_LANG']['tl_module']['wishlistDisableRemoveButton'] = [ 'Löschen Button deaktivieren', 'Hier können Sie den "aus der Wunschliste entfernen" Button deaktivieren.' ];
