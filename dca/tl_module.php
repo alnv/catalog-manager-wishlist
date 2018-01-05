@@ -2,6 +2,7 @@
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'wishlistWidget';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['wishlistWidget'] = 'wishlistEnableFilter,wishlistAmount,wishlistDisableRemoveButton';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['catalogMasterView'] = str_replace( 'catalogUseSocialSharingButtons;', 'catalogUseSocialSharingButtons;{wishlist_legend},wishlistWidget;', $GLOBALS['TL_DCA']['tl_module']['palettes']['catalogMasterView'] );
 $GLOBALS['TL_DCA']['tl_module']['palettes']['catalogUniversalView'] = str_replace( 'catalogUseSocialSharingButtons;', 'catalogUseSocialSharingButtons;{wishlist_legend},wishlistWidget;', $GLOBALS['TL_DCA']['tl_module']['palettes']['catalogUniversalView'] );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['wishlistWidget'] = [
