@@ -7,7 +7,7 @@ use CatalogManager\Toolkit;
 
 class WishlistModule extends CatalogController {
 
-
+    protected $strTable = '';
     protected $blnUseWishlist = false;
 
 
@@ -21,9 +21,11 @@ class WishlistModule extends CatalogController {
 
     public function initialize( &$objCatalogView ) {
 
+        $this->strTable = $objCatalogView->catalogTablename;
         $this->blnUseWishlist = $objCatalogView->wishlistWidget ? true : false;
 
         $objCatalogView->objMainTemplate->useWishlist = $this->blnUseWishlist;
+        $objCatalogView->objMainTemplate->wishlistLabel = $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlist'];
         $objCatalogView->objMainTemplate->wishlistCss = $objCatalogView->wishlistEnableFilter ? ' filtered-wishlist' : '';
 
         if ( $this->blnUseWishlist && \Input::get('wishlist_type') ) {
@@ -35,9 +37,9 @@ class WishlistModule extends CatalogController {
 
             if ( !is_array( $arrTables ) ) $arrTables = [];
 
-            if ( \Input::get('wishlist_table') && !in_array( \Input::get('wishlist_table'), $arrTables ) ) {
+            if ( $this->strTable && !in_array( $this->strTable, $arrTables ) ) {
 
-                $arrTables[] = \Input::get('wishlist_table');
+                $arrTables[] = $objCatalogView->catalogTablename;
             }
 
             $objSession->set( 'wishlist_tables', $arrTables );
@@ -99,8 +101,11 @@ class WishlistModule extends CatalogController {
 
             if (  $blnInWishlist && !$arrCatalog['wishlistAmount'] ) $arrCatalog['wishlistAddButton'] = false;
 
-            $arrCatalog['wishlistAmountLabel'] = 'Anzahl';
-            $arrCatalog['wishlistAddButtonLabel'] = $blnInWishlist ? 'Ändern' : 'Zur Wunschliste hinzufügen';
+            $arrCatalog['wishlistAmountLabel'] = $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlistAmount'];
+            $arrCatalog['wishlistAddDeleteLabel'] = $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlistDeleteButton'];
+            $arrCatalog['wishlistAddButtonLabel'] = $blnInWishlist ?
+                $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlistUpdateButton'] :
+                $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlistAddButton'];
         }
     }
 
@@ -129,14 +134,14 @@ class WishlistModule extends CatalogController {
     protected function addToWishlist() {
 
         $objSession = \Session::getInstance();
-        $objSession->set( 'wishlist_' . \Input::get('wishlist_table'), $this->getWishlistData() );
+        $objSession->set( 'wishlist_' . $this->strTable, $this->getWishlistData() );
     }
 
 
     protected function removeFromWishlist() {
 
         $objSession = \Session::getInstance();
-        $arrSession = $objSession->get( 'wishlist_' . \Input::get('wishlist_table') );
+        $arrSession = $objSession->get( 'wishlist_' . $this->strTable );
 
         if ( !Toolkit::isEmpty( $arrSession ) ) {
 
@@ -151,7 +156,7 @@ class WishlistModule extends CatalogController {
                 unset( $arrSession['ids'][ $intKey ] );
             }
 
-            $objSession->set( 'wishlist_' . \Input::get('wishlist_table'), $arrSession );
+            $objSession->set( 'wishlist_' . $this->strTable, $arrSession );
         }
     }
 
@@ -170,9 +175,9 @@ class WishlistModule extends CatalogController {
 
     protected function validateInput() {
 
-        if ( !$this->Database->tableExists( \Input::get('wishlist_table') ) ) return false;
+        if ( !$this->Database->tableExists( $this->strTable ) ) return false;
 
-        $objRow = $this->Database->prepare( sprintf( 'SELECT id FROM %s WHERE id = ?', \Input::get('wishlist_table') ) )->execute( \Input::get('wishlist_id') );
+        $objRow = $this->Database->prepare( sprintf( 'SELECT id FROM %s WHERE id = ?', $this->strTable ) )->execute( \Input::get('wishlist_id') );
 
         return $objRow->numRows ? true : false;
     }
@@ -183,7 +188,7 @@ class WishlistModule extends CatalogController {
         $arrIds = [];
         $arrAmounts = [];
         $objSession = \Session::getInstance();
-        $arrSession = $objSession->get( 'wishlist_' . \Input::get('wishlist_table') );
+        $arrSession = $objSession->get( 'wishlist_' . $this->strTable );
 
         if ( !Toolkit::isEmpty( $arrSession ) ) {
 
@@ -203,7 +208,7 @@ class WishlistModule extends CatalogController {
 
         return [
 
-            'table' => \Input::get('wishlist_table'),
+            'table' => $this->strTable,
             'amounts' => $arrAmounts,
             'ids' => $arrIds
         ];
