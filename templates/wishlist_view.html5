@@ -1,13 +1,12 @@
-<?php foreach( $this->data as $strTable => $arrData ): ?>
+<?php foreach( $this->data as $arrData ): ?>
 
-    <p><?= $strTable ?></p>
+    <p><?= $arrData['table']['headline'] ?></p>
 
     <table>
         <thead>
             <tr>
-                <th>Titel</th>
-                <th>Anzahl</th>
-                <th>Zur Detailansicht</th>
+                <th><?= $arrData['table']['titleLabel'] ?></th>
+                <th><?= $arrData['table']['amountLabel'] ?></th>
             </tr>
         </thead>
         <tbody>
@@ -15,7 +14,6 @@
                 <tr>
                     <td><?= $arrRow['title'] ?></td>
                     <td><?= $arrRow['wishlistAmountValue'] ?></td>
-                    <td><?= $arrRow['alias'] ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
