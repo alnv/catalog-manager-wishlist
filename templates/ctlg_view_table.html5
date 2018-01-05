@@ -19,17 +19,21 @@
     <?php endforeach; ?>
 
     <?php if ( $this->useWishlist ): ?>
-        <td class="col_<?= $intIndex++; ?> more">
+        <td class="col_<?= $intIndex++; ?> wishlist">
             <form method="GET" enctype="application/x-www-form-urlencoded">
                 <input type="hidden" name="wishlist_id" value="<?= $this->id ?>">
                 <input type="hidden" name="wishlist_type" value="add_to_wishlist">
-                <input type="hidden" name="wishlist_table" value="<?= $this->wishlistTable ?>">
                 <?php if ( $this->wishlistAmount ): ?>
-                    <label for="wishlist_id_<?= $intIndex ?>_amount"><?= $this->wishlistAmountLabel ?></label>
-                    <input type="text" name="wishlist_amount" id="wishlist_id_<?= $intIndex ?>_amount" value="<?= $this->wishlistAmountValue ?>">
+                    <div class="widget widget-text">
+                        <label for="wishlist_id_<?= $intIndex ?>_amount"><?= $this->wishlistAmountLabel ?></label>
+                        <input type="text" class="text" placeholder="<?= $this->wishlistAmountLabel ?>" name="wishlist_amount" id="wishlist_id_<?= $intIndex ?>_amount" value="<?= $this->wishlistAmountValue ?>">
+                    </div>
                 <?php endif; ?>
+
                 <?php if ( $this->wishlistAddButton ): ?>
-                    <button class="wishlist-add-button <?= ( $this->isInWishlist ? 'wishlist-update-button' : '' ) ?>"><?= $this->wishlistAddButtonLabel ?></button>
+                    <div class="widget widget-submit">
+                        <button type="submit" class="submit wishlist-add-button <?= ( $this->isInWishlist ? 'wishlist-update-button' : '' ) ?>"><?= $this->wishlistAddButtonLabel ?></button>
+                    </div>
                 <?php endif; ?>
             </form>
             <?php if ( !$this->wishlistDisableRemoveButton && $this->isInWishlist ): ?>
@@ -37,7 +41,9 @@
                     <input type="hidden" name="wishlist_id" value="<?= $this->id ?>">
                     <input type="hidden" name="wishlist_type" value="remove_from_wishlist">
                     <input type="hidden" name="wishlist_table" value="<?= $this->wishlistTable ?>">
-                    <button class="wishlist-remove-button">Aus der Wunschliste entfernen</button>
+                    <div class="widget widget-submit">
+                        <button type="submit" class="submit wishlist-remove-button"><?= $this->wishlistAddDeleteLabel ?></button>
+                    </div>
                 </form>
             <?php endif; ?>
         </td>
