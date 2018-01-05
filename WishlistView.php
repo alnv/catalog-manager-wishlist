@@ -2,6 +2,8 @@
 
 namespace CMWishlist;
 
+use CatalogManager\I18nCatalogTranslator;
+use CatalogManager\CatalogFieldBuilder;
 use CatalogManager\CatalogController;
 use CatalogManager\Toolkit;
 
@@ -11,6 +13,7 @@ class WishlistView extends CatalogController {
     protected $blnExplicit = false;
     protected $arrExplicitTables = [];
     protected $arrWishlistTables = [];
+    protected $objI18nCatalogTranslator = null;
 
 
     public function __construct() {
@@ -18,9 +21,11 @@ class WishlistView extends CatalogController {
         parent::__construct();
 
         $this->import( 'SQLQueryBuilder' );
-        $this->import( 'CatalogFieldBuilder' );
 
         $objSession = \Session::getInstance();
+
+        $this->objI18nCatalogTranslator = new I18nCatalogTranslator();
+        $this->objI18nCatalogTranslator->initialize();
 
         if ( is_array( $objSession->get( 'wishlist_tables' ) ) && !empty( $objSession->get( 'wishlist_tables' ) ) ) {
 
@@ -58,9 +63,11 @@ class WishlistView extends CatalogController {
 
         foreach ( $arrTables as $strTable ) {
 
-            $this->CatalogFieldBuilder->initialize( $strTable );
-            $arrCatalog = $this->CatalogFieldBuilder->getCatalog();
-            $arrFields = $this->CatalogFieldBuilder->getCatalogFields( false, $this );
+            $objFieldBuilder = new CatalogFieldBuilder();
+
+            $objFieldBuilder->initialize( $strTable );
+            $arrCatalog = $objFieldBuilder->getCatalog();
+            $arrFields = $objFieldBuilder->getCatalogFields( false, $this );
 
             $arrRow = $this->getRow( $strTable, $arrCatalog, $arrFields );
 
@@ -79,9 +86,16 @@ class WishlistView extends CatalogController {
 
     protected function getTable( $strTable, $arrCatalog ) {
 
+        $arrModuleLabels = $this->objI18nCatalogTranslator->get( 'module', $arrCatalog['tablename'] );
+        $strTitleLabel = $this->objI18nCatalogTranslator->get( 'field', 'title', [ 'titleOnly' => true ] );
+
         return [
 
-            'table' => $strTable
+            'table' => $strTable,
+            'titleLabel' => $strTitleLabel,
+            'headline' => $arrModuleLabels[0],
+            'description' => $arrModuleLabels[1],
+            'amountLabel' => $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlistAmount']
         ];
     }
 
