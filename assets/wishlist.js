@@ -1,12 +1,15 @@
 document.addEventListener( 'DOMContentLoaded' , function() {
 
-    var arrWishlist = document.querySelectorAll( '.wishlist' );
+    if ( 'content' in document.createElement( 'template' ) ) {
 
-    if ( !arrWishlist.length ) return null;
+        var arrWishlist = document.querySelectorAll( '.wishlist-form' );
 
-    for ( var i = 0; i < arrWishlist.length; i++ ) {
+        if ( !arrWishlist.length ) return null;
 
-        setListener( arrWishlist[i] )
+        for ( var i = 0; i < arrWishlist.length; i++ ) {
+
+            setListener( arrWishlist[i] )
+        }
     }
 });
 
@@ -30,7 +33,6 @@ function addAction( objEvent ) {
 
     objEvent.preventDefault();
 
-    var objXHttp = new XMLHttpRequest();
     var strId = this.form.wishlist_id.value;
     var strType = this.form.wishlist_type.value;
     var strAmount = this.form.wishlist_amount.value;
@@ -41,26 +43,7 @@ function addAction( objEvent ) {
         + '&wishlist_amount=' + strAmount
         + '&wishlist_ajax=1';
 
-    objXHttp.onreadystatechange = function() {
-
-        if ( this.readyState === 4 && this.status === 200 ) {
-
-            var objState = JSON.parse( this.response );
-            var objOldWishlist = document.getElementById( objState.id );
-            var objTemplate = document.createElement( 'template' );
-
-            objTemplate.innerHTML = objState.reload;
-
-            var objFreshWishlist = objTemplate.content.querySelector('.wishlist');
-
-            objOldWishlist.parentNode.replaceChild( objFreshWishlist, objOldWishlist );
-
-            setListener( objFreshWishlist );
-        }
-    };
-
-    objXHttp.open( 'GET', strUrl, true);
-    objXHttp.send();
+    sendWishRequest( strUrl );
 
     return false;
 }
@@ -69,7 +52,6 @@ function deleteAction( objEvent ) {
 
     objEvent.preventDefault();
 
-    var objXHttp = new XMLHttpRequest();
     var strId = this.form.wishlist_id.value;
     var strType = this.form.wishlist_type.value;
     var strTable = this.form.wishlist_table.value;
@@ -80,24 +62,39 @@ function deleteAction( objEvent ) {
         + '&wishlist_table=' + strTable
         + '&wishlist_ajax=1';
 
-    objXHttp.onreadystatechange = function() {
+    sendWishRequest( strUrl );
 
-        if ( this.readyState === 4 && this.status === 200 ) {
+    return false;
+}
 
-            var objState = JSON.parse( this.response );
-            var objOldWishlist = document.getElementById( objState.id );
-            var objTemplate = document.createElement( 'template' );
+function sendWishRequest( strUrl ) {
 
-            objTemplate.innerHTML = objState.reload;
+    var objXHR = new XMLHttpRequest();
 
-            var objFreshWishlist = objTemplate.content.querySelector('.wishlist');
+    objXHR.onload = function() {
 
-            objOldWishlist.parentNode.replaceChild( objFreshWishlist, objOldWishlist );
+        if ( objXHR.status === 200 ) {
 
-            setListener( objFreshWishlist );
+            if ( !objXHR.responseText ) return null;
+
+            var objResult = JSON.parse( this.responseText );
+
+            if ( objResult && typeof objResult !== 'undefined' ) {
+
+                var objOldWishlist = document.getElementById( objResult.id );
+                var objTemplate = document.createElement( 'template' );
+
+                objTemplate.innerHTML = objResult.reload;
+
+                var objFreshWishlist = objTemplate.content.querySelector( '.wishlist-form' );
+
+                objOldWishlist.parentNode.replaceChild( objFreshWishlist, objOldWishlist );
+
+                setListener( objFreshWishlist );
+            }
         }
     };
 
-    objXHttp.open( 'GET', strUrl, true);
-    objXHttp.send();
+    objXHR.open( 'GET', strUrl, true);
+    objXHR.send();
 }
