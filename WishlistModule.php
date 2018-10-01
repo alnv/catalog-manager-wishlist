@@ -28,6 +28,11 @@ class WishlistModule extends CatalogController {
         $objCatalogView->objMainTemplate->wishlistLabel = $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlist'];
         $objCatalogView->objMainTemplate->wishlistCss = $objCatalogView->wishlistEnableFilter ? ' filtered-wishlist' : '';
 
+        if ( $this->blnUseWishlist ) {
+
+            $GLOBALS['TL_JAVASCRIPT']['wishlistJs'] = 'system/modules/catalog-manager-wishlist/assets/wishlist.js';
+        }
+
         if ( $this->blnUseWishlist && \Input::get('wishlist_type') ) {
 
             if ( !$this->validateInput() ) return null;
@@ -49,14 +54,14 @@ class WishlistModule extends CatalogController {
                 case 'add_to_wishlist':
 
                     $this->addToWishlist();
-                    $this->request();
+                    $this->request( $objCatalogView );
 
                     break;
 
                 case 'remove_from_wishlist':
 
                     $this->removeFromWishlist();
-                    $this->request();
+                    $this->request( $objCatalogView );
 
                     break;
             }
@@ -73,7 +78,7 @@ class WishlistModule extends CatalogController {
             $blnInWishlist = false;
 
             $objSession = \Session::getInstance();
-            $arrSession = $objSession->get( 'wishlist_' . $objCatalogView->catalogTablename );
+            $arrSession = $objSession->get( 'wishlist_' . $strTablename );
 
             if ( !Toolkit::isEmpty( $arrSession ) ) {
 
@@ -94,8 +99,9 @@ class WishlistModule extends CatalogController {
             $arrCatalog['wishlistAmountValue'] = $strAmountValue;
 
             $arrCatalog['wishlistAddButton'] = true;
+            $arrCatalog['wishlistTable'] = $strTablename;
             $arrCatalog['useWishlist'] = $this->blnUseWishlist;
-            $arrCatalog['wishlistTable'] = $objCatalogView->catalogTablename;
+            $arrCatalog['wishlistID'] = md5( $arrCatalog['id'] . $strTablename );
             $arrCatalog['wishlistAmount'] = $objCatalogView->wishlistAmount ? true : false;
             $arrCatalog['wishlistDisableRemoveButton'] = $objCatalogView->wishlistDisableRemoveButton ? true : false;
 
@@ -106,6 +112,11 @@ class WishlistModule extends CatalogController {
             $arrCatalog['wishlistAddButtonLabel'] = $blnInWishlist ?
                 $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlistUpdateButton'] :
                 $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlistAddButton'];
+
+            $objTemplate = new \FrontendTemplate( 'wishlist_form' );
+            $objTemplate->setData( $arrCatalog );
+
+            $arrCatalog['wishlistForm'] = $objTemplate->parse();
         }
     }
 
@@ -161,12 +172,32 @@ class WishlistModule extends CatalogController {
     }
 
 
-    protected function request() {
+    protected function request( $objCatalogView ) {
+
+        if ( \Input::get( 'wishlist_ajax' ) ) {
+
+            $objEntity = $this->Database->prepare( sprintf( 'SELECT * FROM %s WHERE id = ?', $this->strTable ) )->limit( 1 )->execute( \Input::get('wishlist_id') );
+            $arrCatalog = $objEntity->row();
+
+            $this->renderCatalog( $arrCatalog, $this->strTable, $objCatalogView );
+
+            header('Content-Type: application/json');
+
+            echo json_encode([
+
+                'id' => md5( \Input::get('wishlist_id') . $this->strTable ),
+                'reload' => $arrCatalog['wishlistForm']
+
+            ], 512 );
+
+            exit;
+        }
 
         $strRedirect = preg_replace( '/[&,?]wishlist_type=remove_from_wishlist/', '', \Environment::get('request') );
         $strRedirect = preg_replace( '/[&,?]wishlist_type=add_to_wishlist/', '', $strRedirect );
         $strRedirect = preg_replace( '/[&,?]wishlist_amount=[^&]*/i', '', $strRedirect );
         $strRedirect = preg_replace( '/[&,?]wishlist_table=[^&]*/i', '', $strRedirect );
+        $strRedirect = preg_replace( '/[&,?]wishlist_ajax=[^&]*/i', '', $strRedirect );
         $strRedirect = preg_replace( '/[&,?]wishlist_id=[^&]*/i', '', $strRedirect );
 
         \Controller::redirect( $strRedirect );
