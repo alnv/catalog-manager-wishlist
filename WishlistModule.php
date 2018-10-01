@@ -8,6 +8,7 @@ use CatalogManager\Toolkit;
 class WishlistModule extends CatalogController {
 
     protected $strTable = '';
+    protected $intColIndex = 0;
     protected $blnUseWishlist = false;
 
 
@@ -74,6 +75,7 @@ class WishlistModule extends CatalogController {
         if ( $this->blnUseWishlist ) {
 
             $strCss = '';
+            $this->intColIndex++;
             $strAmountValue = '1';
             $blnInWishlist = false;
 
@@ -100,6 +102,7 @@ class WishlistModule extends CatalogController {
 
             $arrCatalog['wishlistAddButton'] = true;
             $arrCatalog['wishlistTable'] = $strTablename;
+            $arrCatalog['wishlistIndex'] = $this->intColIndex;
             $arrCatalog['useWishlist'] = $this->blnUseWishlist;
             $arrCatalog['wishlistID'] = md5( $arrCatalog['id'] . $strTablename );
             $arrCatalog['wishlistAmount'] = $objCatalogView->wishlistAmount ? true : false;
@@ -113,7 +116,14 @@ class WishlistModule extends CatalogController {
                 $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlistUpdateButton'] :
                 $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlistAddButton'];
 
-            $objTemplate = new \FrontendTemplate( 'wishlist_form' );
+            $strTemplate = 'wishlist_form_list';
+
+            if ( $objCatalogView->enableTableView ) {
+
+                $strTemplate = 'wishlist_form_table';
+            }
+
+            $objTemplate = new \FrontendTemplate( $strTemplate );
             $objTemplate->setData( $arrCatalog );
 
             $arrCatalog['wishlistForm'] = $objTemplate->parse();
