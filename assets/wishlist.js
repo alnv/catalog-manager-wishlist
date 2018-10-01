@@ -37,6 +37,8 @@ function addAction( objEvent ) {
     var strId = this.form.wishlist_id.value;
     var strType = this.form.wishlist_type.value;
 
+    this.form.parentNode.classList.add( 'loading' );
+
     if ( this.form.wishlist_amount ) {
 
         strAmount = this.form.wishlist_amount.value;
@@ -60,6 +62,8 @@ function deleteAction( objEvent ) {
     var strId = this.form.wishlist_id.value;
     var strType = this.form.wishlist_type.value;
     var strTable = this.form.wishlist_table.value;
+
+    this.form.parentNode.classList.add( 'loading' );
 
     var strUrl = window.location.href + '?'
         + 'wishlist_id=' + strId
