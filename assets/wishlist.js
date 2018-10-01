@@ -33,9 +33,14 @@ function addAction( objEvent ) {
 
     objEvent.preventDefault();
 
+    var strAmount = 1;
     var strId = this.form.wishlist_id.value;
     var strType = this.form.wishlist_type.value;
-    var strAmount = this.form.wishlist_amount.value;
+
+    if ( this.form.wishlist_amount ) {
+
+        strAmount = this.form.wishlist_amount.value;
+    }
 
     var strUrl = window.location.href + '?'
         + 'wishlist_id=' + strId
