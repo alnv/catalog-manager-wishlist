@@ -8,7 +8,7 @@ document.addEventListener( 'DOMContentLoaded' , function() {
 
         for ( var i = 0; i < arrWishlist.length; i++ ) {
 
-            setListener( arrWishlist[i] )
+            setListener( arrWishlist[i] );
         }
     }
 });
@@ -44,7 +44,7 @@ function addAction( objEvent ) {
         strAmount = this.form.wishlist_amount.value;
     }
 
-    var strUrl = window.location.href + '?'
+    var strUrl = location.protocol +'//' + location.host + location.pathname + '?'
         + 'wishlist_id=' + strId
         + '&wishlist_type=' + strType
         + '&wishlist_amount=' + strAmount
@@ -65,7 +65,7 @@ function deleteAction( objEvent ) {
 
     this.form.parentNode.classList.add( 'loading' );
 
-    var strUrl = window.location.href + '?'
+    var strUrl = location.protocol +'//' + location.host + location.pathname + '?'
         + 'wishlist_id=' + strId
         + '&wishlist_type=' + strType
         + '&wishlist_table=' + strTable
@@ -86,7 +86,7 @@ function sendWishRequest( strUrl ) {
 
             if ( !objXHR.responseText ) return null;
 
-            var objResult = JSON.parse( this.responseText );
+            var objResult = JSON.parse( objXHR.responseText );
 
             if ( objResult && typeof objResult !== 'undefined' ) {
 
