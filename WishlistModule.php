@@ -7,6 +7,7 @@ use CatalogManager\Toolkit;
 
 class WishlistModule extends CatalogController {
 
+
     protected $strTable = '';
     protected $intColIndex = 0;
     protected $blnUseWishlist = false;
