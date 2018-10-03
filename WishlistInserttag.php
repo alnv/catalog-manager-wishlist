@@ -48,6 +48,27 @@ class WishlistInserttag extends \Frontend {
             return $objWishlistView->render();
         }
 
+        if ( isset( $arrTags[0] ) && $arrTags[0] == 'WISHLIST_AMOUNT' && $arrTags[1] ) {
+
+            $objSession = \Session::getInstance();
+            $arrTables = $objSession->get( 'wishlist_tables' );
+
+            if ( !is_array( $arrTables ) ) $arrTables = [];
+
+            if ( in_array( $arrTags[1], $arrTables ) ) {
+
+                $numReturn = 0;
+                $arrValue = $objSession->get( 'wishlist_' . $arrTags[1] );
+
+                if ( isset( $arrValue['ids'] ) ) {
+
+                    $numReturn = count( $arrValue['ids'] );
+                }
+
+                return $numReturn;
+            }
+        }
+
         return false;
     }
 }

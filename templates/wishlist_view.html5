@@ -1,7 +1,5 @@
 <?php foreach( $this->data as $arrData ): ?>
-
     <p><?= $arrData['table']['headline'] ?></p>
-
     <table>
         <thead>
             <tr>
@@ -18,5 +16,4 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-
 <?php endforeach; ?>
