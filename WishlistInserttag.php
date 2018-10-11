@@ -50,6 +50,7 @@ class WishlistInserttag extends \Frontend {
 
         if ( isset( $arrTags[0] ) && $arrTags[0] == 'WISHLIST_AMOUNT' && $arrTags[1] ) {
 
+            $numReturn = 0;
             $objSession = \Session::getInstance();
             $arrTables = $objSession->get( 'wishlist_tables' );
 
@@ -57,16 +58,15 @@ class WishlistInserttag extends \Frontend {
 
             if ( in_array( $arrTags[1], $arrTables ) ) {
 
-                $numReturn = 0;
                 $arrValue = $objSession->get( 'wishlist_' . $arrTags[1] );
 
                 if ( isset( $arrValue['ids'] ) ) {
 
                     $numReturn = count( $arrValue['ids'] );
                 }
-
-                return $numReturn;
             }
+
+            return $numReturn;
         }
 
         return false;
