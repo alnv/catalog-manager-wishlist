@@ -1,21 +1,21 @@
 {
   "name": "alnv/catalog-manager-wishlist",
-  "description": "Extension for Catalog Manager. This Extension allows you to create a wish list from one or more catalogs.",
-  "keywords": [ "contao", "catalog", "manager", "wish list", "extension" ],
+  "description": "Extension for Catalog Manager. This Extension allows you to create a wishlist.",
+  "keywords": [ "contao", "catalog", "manager", "wishlist", "extension" ],
   "type": "contao-module",
-  "homepage": "https://catalog-manager.alexandernaumov.de",
+  "homepage": "https://catalog-manager.org",
   "license": "proprietary",
   "authors": [
     {
       "name": "Alexander Naumov",
-      "homepage": "https://www.alexandernaumov.de",
+      "homepage": "https://alexandernaumov.de",
       "role": "Developer"
     }
   ],
   "support": {
     "email": "me@alexandernaumov.de",
     "issues": "https://github.com/alnv/catalog-manager-wishlist/issues",
-    "wiki": "https://catalog-manager.alexandernaumov.de/dokumentation.html"
+    "wiki": "https://catalog-manager.org/dokumentation/catalog-manager-wunschliste.html"
   },
   "require": {
     "php":">=5.6",
