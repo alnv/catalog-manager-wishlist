@@ -7,19 +7,15 @@ use CatalogManager\Toolkit;
 
 class WishlistModule extends CatalogController {
 
-
     protected $strTable = '';
     protected $intColIndex = 0;
     protected $blnUseWishlist = false;
 
-
     public function __construct() {
 
         parent::__construct();
-
         $this->import( 'Database' );
     }
-
 
     public function initialize( &$objCatalogView ) {
 
@@ -69,7 +65,6 @@ class WishlistModule extends CatalogController {
             }
         }
     }
-
 
     public function renderCatalog( &$arrCatalog, $strTablename, $objCatalogView ) {
 
@@ -131,7 +126,6 @@ class WishlistModule extends CatalogController {
         }
     }
 
-
     public function setQuery( $arrQuery, $objCatalogView ) {
 
         if ( !$objCatalogView->wishlistEnableFilter ) return $arrQuery;
@@ -152,13 +146,11 @@ class WishlistModule extends CatalogController {
         return $arrQuery;
     }
 
-
     protected function addToWishlist() {
 
         $objSession = \Session::getInstance();
         $objSession->set( 'wishlist_' . $this->strTable, $this->getWishlistData() );
     }
-
 
     protected function removeFromWishlist() {
 
@@ -182,7 +174,6 @@ class WishlistModule extends CatalogController {
         }
     }
 
-
     protected function request( $objCatalogView ) {
 
         if ( \Input::get( 'wishlist_ajax' ) ) {
@@ -195,10 +186,8 @@ class WishlistModule extends CatalogController {
             header('Content-Type: application/json');
 
             echo json_encode([
-
                 'id' => md5( \Input::get('wishlist_id') . $this->strTable ),
                 'reload' => $arrCatalog['wishlistForm']
-
             ], 512 );
 
             exit;
@@ -214,7 +203,6 @@ class WishlistModule extends CatalogController {
         \Controller::redirect( $strRedirect );
     }
 
-
     protected function validateInput() {
 
         if ( !$this->Database->tableExists( $this->strTable ) ) return false;
@@ -223,7 +211,6 @@ class WishlistModule extends CatalogController {
 
         return $objRow->numRows ? true : false;
     }
-
 
     protected function getWishlistData() {
 
