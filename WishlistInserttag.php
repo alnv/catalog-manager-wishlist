@@ -5,6 +5,7 @@ namespace CMWishlist;
 class WishlistInserttag extends \Frontend {
 
     public function getInsertTagValue($strTag) {
+
         $arrTables = [];
         $arrTags = explode('::', $strTag);
 
@@ -12,7 +13,7 @@ class WishlistInserttag extends \Frontend {
             return false;
         }
 
-        if ( isset( $arrTags[0] ) && $arrTags[0] == 'WISHLIST' ) {
+        if (isset($arrTags[0]) && $arrTags[0] == 'WISHLIST') {
 
             $objWishlistView = new WishlistView();
             $arrChunks = explode('?', urldecode( $arrTags[2] ), 2 );
@@ -25,16 +26,16 @@ class WishlistInserttag extends \Frontend {
                 list($strKey, $strOption) = explode('=', $strParam);
                 switch ( $strKey ) {
                     case 'tables':
-                        $arrOnlyTables = explode( ',', $strOption );
-                        if ( !empty( $arrOnlyTables ) && is_array( $arrOnlyTables ) ) {
+                        $arrOnlyTables = explode(',', $strOption);
+                        if ( !empty($arrOnlyTables) && is_array($arrOnlyTables)) {
                             $arrTables = $arrOnlyTables;
                         }
                         break;
                 }
             }
 
-            if ( is_array( $arrTables ) && !empty( $arrTables ) ) {
-                $objWishlistView->setExplicit( $arrTables );
+            if (is_array($arrTables) && !empty($arrTables)) {
+                $objWishlistView->setExplicit($arrTables);
             }
 
             return $objWishlistView->render();
@@ -48,8 +49,8 @@ class WishlistInserttag extends \Frontend {
             if ( !is_array( $arrTables ) ) $arrTables = [];
             if ( in_array( $arrTags[1], $arrTables ) ) {
                 $arrValue = $objSession->get( 'wishlist_' . $arrTags[1] );
-                if ( isset( $arrValue['ids'] ) ) {
-                    $numReturn = count( $arrValue['ids'] );
+                if ( isset($arrValue['ids'])) {
+                    $numReturn = count($arrValue['ids']);
                 }
             }
             return $numReturn;
