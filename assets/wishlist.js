@@ -1,14 +1,14 @@
 document.addEventListener( 'DOMContentLoaded' , function() {
-    if ( 'content' in document.createElement( 'template' ) ) {
-        var arrWishlist = document.querySelectorAll( '.wishlist-form' );
-        if ( !arrWishlist.length ) return null;
-        for ( var i = 0; i < arrWishlist.length; i++ ) {
-            setListener( arrWishlist[i] );
+    if ( 'content' in document.createElement('template')) {
+        var arrWishlist = document.querySelectorAll('.wishlist-form');
+        if (!arrWishlist.length) return null;
+        for (var i = 0; i < arrWishlist.length; i++) {
+            setListener(arrWishlist[i]);
         }
     }
 });
 
-function setListener( objWishlist ) {
+function setListener(objWishlist) {
 
     var objAddForm = objWishlist.querySelector( 'form.form-add .submit' );
     var objDeleteForm = objWishlist.querySelector( 'form.form-delete .submit' );

@@ -9,12 +9,16 @@ class WishlistInserttag extends \Frontend {
         $arrTables = [];
         $arrTags = explode('::', $strTag);
 
-        if ( empty( $arrTags ) || !is_array( $arrTags ) ) {
+        if ( empty($arrTags) || !is_array($arrTags)) {
             return false;
         }
 
         if (isset($arrTags[0]) && $arrTags[0] == 'WISHLIST') {
 
+            $arrSettings = [
+                'noJoins' => false,
+                'noParentJoin' => false
+            ];
             $objWishlistView = new WishlistView();
             $arrChunks = explode('?', urldecode( $arrTags[2] ), 2 );
             $strSource = \StringUtil::decodeEntities( $arrChunks[1] );
@@ -31,6 +35,12 @@ class WishlistInserttag extends \Frontend {
                             $arrTables = $arrOnlyTables;
                         }
                         break;
+                    case 'noJoins':
+                        $arrSettings['noJoins'] = $strOption ? true : false;
+                        break;
+                    case 'noParentJoin':
+                        $arrSettings['noParentJoin'] = $strOption ? true : false;
+                        break;
                 }
             }
 
@@ -38,7 +48,7 @@ class WishlistInserttag extends \Frontend {
                 $objWishlistView->setExplicit($arrTables);
             }
 
-            return $objWishlistView->render();
+            return $objWishlistView->render($arrSettings);
         }
 
         if ( isset( $arrTags[0] ) && $arrTags[0] == 'WISHLIST_AMOUNT' && $arrTags[1] ) {
