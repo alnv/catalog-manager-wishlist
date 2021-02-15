@@ -17,6 +17,14 @@ class WishlistModule extends CatalogController {
         $this->import( 'Database' );
     }
 
+    protected function getSession() {
+
+        if (version_compare('4.4', VERSION, '<=')) {
+           return \System::getContainer()->get('session');
+        }
+        return \Session::getInstance();
+    }
+
     public function initialize( &$objCatalogView ) {
 
         $this->strTable = $objCatalogView->catalogTablename;
@@ -35,7 +43,7 @@ class WishlistModule extends CatalogController {
 
             if ( !$this->validateInput() ) return null;
 
-            $objSession = \Session::getInstance();
+            $objSession = $this->getSession();
             $arrTables = $objSession->get('wishlist_tables');
 
             if ( !is_array( $arrTables ) ) $arrTables = [];
@@ -75,7 +83,7 @@ class WishlistModule extends CatalogController {
             $strAmountValue = '1';
             $blnInWishlist = false;
 
-            $objSession = \Session::getInstance();
+            $objSession = $this->getSession();
             $arrSession = $objSession->get( 'wishlist_' . $strTablename );
 
             if ( !Toolkit::isEmpty( $arrSession ) ) {
@@ -130,7 +138,7 @@ class WishlistModule extends CatalogController {
 
         if ( !$objCatalogView->wishlistEnableFilter ) return $arrQuery;
 
-        $objSession = \Session::getInstance();
+        $objSession = $this->getSession();
         $arrSession = $objSession->get( 'wishlist_' . $objCatalogView->catalogTablename );
 
         if ( Toolkit::isEmpty( $arrSession ) ) $arrSession = [ 'ids' => ['0'] ];
@@ -148,13 +156,13 @@ class WishlistModule extends CatalogController {
 
     protected function addToWishlist() {
 
-        $objSession = \Session::getInstance();
+        $objSession = $this->getSession();
         $objSession->set( 'wishlist_' . $this->strTable, $this->getWishlistData() );
     }
 
     protected function removeFromWishlist() {
 
-        $objSession = \Session::getInstance();
+        $objSession = $this->getSession();
         $arrSession = $objSession->get( 'wishlist_' . $this->strTable );
 
         if ( !Toolkit::isEmpty( $arrSession ) ) {
@@ -216,7 +224,7 @@ class WishlistModule extends CatalogController {
 
         $arrIds = [];
         $arrAmounts = [];
-        $objSession = \Session::getInstance();
+        $objSession = $this->getSession();
         $arrSession = $objSession->get( 'wishlist_' . $this->strTable );
 
         if ( !Toolkit::isEmpty( $arrSession ) ) {
