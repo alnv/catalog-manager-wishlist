@@ -4,6 +4,14 @@ namespace CMWishlist;
 
 class WishlistInserttag extends \Frontend {
 
+    protected function getSession() {
+
+        if (version_compare('4.4', VERSION, '<=')) {
+            return \System::getContainer()->get('session');
+        }
+        return \Session::getInstance();
+    }
+
     public function getInsertTagValue($strTag) {
 
         $arrTables = [];
@@ -53,13 +61,13 @@ class WishlistInserttag extends \Frontend {
 
         if ( isset( $arrTags[0] ) && $arrTags[0] == 'WISHLIST_AMOUNT' && $arrTags[1] ) {
             $numReturn = 0;
-            $objSession = \Session::getInstance();
-            $arrTables = $objSession->get( 'wishlist_tables' );
+            $objSession = $this->getSession();
+            $arrTables = $objSession->get('wishlist_tables');
 
-            if ( !is_array( $arrTables ) ) $arrTables = [];
-            if ( in_array( $arrTags[1], $arrTables ) ) {
-                $arrValue = $objSession->get( 'wishlist_' . $arrTags[1] );
-                if ( isset($arrValue['ids'])) {
+            if (!is_array($arrTables)) $arrTables = [];
+            if (in_array($arrTags[1], $arrTables)) {
+                $arrValue = $objSession->get( 'wishlist_' . $arrTags[1]);
+                if (isset($arrValue['ids'])) {
                     $numReturn = count($arrValue['ids']);
                 }
             }
