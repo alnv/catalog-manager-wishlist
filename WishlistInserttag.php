@@ -64,11 +64,19 @@ class WishlistInserttag extends \Frontend {
             $objSession = $this->getSession();
             $arrTables = $objSession->get('wishlist_tables');
 
+            if (!\Database::getInstance()->tableExists($arrTags[1])) {
+                return $numReturn;
+            }
+
             if (!is_array($arrTables)) $arrTables = [];
             if (in_array($arrTags[1], $arrTables)) {
                 $arrValue = $objSession->get( 'wishlist_' . $arrTags[1]);
                 if (isset($arrValue['ids'])) {
-                    $numReturn = count($arrValue['ids']);
+                    foreach ($arrValue['ids'] as $strId) {
+                        if (\Database::getInstance()->prepare('SELECT * FROM ' . $arrTags[1] . ' WHERE id=? AND invisible!=?')->limit(1)->execute($strId, '1')->numRows) {
+                            $numReturn = $numReturn + 1;
+                        }
+                    }
                 }
             }
             return $numReturn;
