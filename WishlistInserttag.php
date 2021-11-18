@@ -25,23 +25,28 @@ class WishlistInserttag extends \Frontend {
 
             $arrSettings = [
                 'noJoins' => false,
-                'noParentJoin' => false
+                'noParentJoin' => false,
+                'template' => ''
             ];
+
             $objWishlistView = new WishlistView();
             $arrChunks = explode('?', urldecode( $arrTags[2] ), 2 );
             $strSource = \StringUtil::decodeEntities( $arrChunks[1] );
             $strSource = str_replace( '[&]', '&', $strSource );
             $arrParams = explode( '&', $strSource );
 
-            foreach ( $arrParams as $strParam ) {
+            foreach ($arrParams as $strParam) {
 
                 list($strKey, $strOption) = explode('=', $strParam);
-                switch ( $strKey ) {
+                switch ($strKey) {
                     case 'tables':
                         $arrOnlyTables = explode(',', $strOption);
                         if ( !empty($arrOnlyTables) && is_array($arrOnlyTables)) {
                             $arrTables = $arrOnlyTables;
                         }
+                        break;
+                    case 'template':
+                        $arrSettings['template'] = $strOption;
                         break;
                     case 'noJoins':
                         $arrSettings['noJoins'] = $strOption ? true : false;
@@ -52,7 +57,7 @@ class WishlistInserttag extends \Frontend {
                 }
             }
 
-            if (is_array($arrTables) && !empty($arrTables)) {
+            if (!empty($arrTables)) {
                 $objWishlistView->setExplicit($arrTables);
             }
 
