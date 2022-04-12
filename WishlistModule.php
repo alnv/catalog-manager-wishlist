@@ -86,11 +86,9 @@ class WishlistModule extends CatalogController {
             $objSession = $this->getSession();
             $arrSession = $objSession->get( 'wishlist_' . $strTablename );
 
-            if ( !Toolkit::isEmpty( $arrSession ) ) {
-
-                if ( isset( $arrSession['amounts'] ) && $arrSession['amounts'][ $arrCatalog['id'] ] ) {
-
-                    $strAmountValue = $arrSession['amounts'][ $arrCatalog['id'] ];
+            if (!Toolkit::isEmpty($arrSession)) {
+                if (isset($arrSession['amounts']) && isset($arrSession['amounts'][$arrCatalog['id']]) && $arrSession['amounts'][$arrCatalog['id']]) {
+                    $strAmountValue = $arrSession['amounts'][$arrCatalog['id']];
                 }
 
                 if ( isset( $arrSession['ids'] ) && in_array( $arrCatalog['id'], $arrSession['ids'] ) ) {

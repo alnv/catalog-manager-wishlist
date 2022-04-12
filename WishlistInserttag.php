@@ -30,30 +30,31 @@ class WishlistInserttag extends \Frontend {
             ];
 
             $objWishlistView = new WishlistView();
-            $arrChunks = explode('?', urldecode( $arrTags[2] ), 2 );
-            $strSource = \StringUtil::decodeEntities( $arrChunks[1] );
+            $arrChunks = explode('?', urldecode($arrTags[2]??''), 2);
+            $strSource = \StringUtil::decodeEntities($arrChunks[1]??'');
             $strSource = str_replace( '[&]', '&', $strSource );
-            $arrParams = explode( '&', $strSource );
+            $arrParams = explode('&', $strSource);
 
-            foreach ($arrParams as $strParam) {
-
-                list($strKey, $strOption) = explode('=', $strParam);
-                switch ($strKey) {
-                    case 'tables':
-                        $arrOnlyTables = explode(',', $strOption);
-                        if ( !empty($arrOnlyTables) && is_array($arrOnlyTables)) {
-                            $arrTables = $arrOnlyTables;
-                        }
-                        break;
-                    case 'template':
-                        $arrSettings['template'] = $strOption;
-                        break;
-                    case 'noJoins':
-                        $arrSettings['noJoins'] = $strOption ? true : false;
-                        break;
-                    case 'noParentJoin':
-                        $arrSettings['noParentJoin'] = $strOption ? true : false;
-                        break;
+            if (!empty(array_filter($arrParams))) {
+                foreach ($arrParams as $strParam) {
+                    list($strKey, $strOption) = explode('=', $strParam);
+                    switch ($strKey) {
+                        case 'tables':
+                            $arrOnlyTables = explode(',', $strOption);
+                            if (!empty($arrOnlyTables) && is_array($arrOnlyTables)) {
+                                $arrTables = $arrOnlyTables;
+                            }
+                            break;
+                        case 'template':
+                            $arrSettings['template'] = $strOption;
+                            break;
+                        case 'noJoins':
+                            $arrSettings['noJoins'] = $strOption ? true : false;
+                            break;
+                        case 'noParentJoin':
+                            $arrSettings['noParentJoin'] = $strOption ? true : false;
+                            break;
+                    }
                 }
             }
 
