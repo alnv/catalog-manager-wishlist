@@ -19,12 +19,13 @@ Ein Beispiel mit "ctlg_view_teaser":
 
 ## Verfügbare Inserttags:
 
-### {{WISHLIST}} 
+### WISHLIST
+{{WISHLIST}} oder {{WISHLIST_PERSIST}}
 Gibt die gesamte Wunschliste tabellarisch zurück. Diese kann an eine E-Mail angehängt werden.
 Weitere Optionen:
 
-- **{{WISHLIST::?tables=ctlg_my_table}}** => Damit können wir nur bestimmte Tabellen ausgeben.
+{{WISHLIST::?tables=ctlg_my_table}} => Damit können wir nur bestimmte Tabellen ausgeben.
 
-
-### {{WISHLIST_AMOUNT::ctlg_my_table}} 
+### WISHLIST_AMOUNT 
+{{WISHLIST_AMOUNT::ctlg_my_table}} oder {{WISHLIST_PERSIST_AMOUNT::ctlg_my_table}}
 Gibt die Anzahl der sich befindeten Datensätze in der Wunschliste zurück.
