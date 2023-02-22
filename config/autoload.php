@@ -1,8 +1,9 @@
 <?php
 
-ClassLoader::addNamespace( 'CMWishlist' );
+ClassLoader::addNamespace('CMWishlist');
 
 ClassLoader::addClasses([
+    'CMWishlist\Storage' => 'system/modules/catalog-manager-wishlist/Storage.php',
     'CMWishlist\WishlistView' => 'system/modules/catalog-manager-wishlist/WishlistView.php',
     'CMWishlist\WishlistModule' => 'system/modules/catalog-manager-wishlist/WishlistModule.php',
     'CMWishlist\WishlistInserttag' => 'system/modules/catalog-manager-wishlist/WishlistInserttag.php'

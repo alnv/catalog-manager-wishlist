@@ -18,7 +18,7 @@
     "wiki": "https://catalog-manager.org/dokumentation/catalog-manager-wunschliste.html"
   },
   "require": {
-    "php":">=7.2",
+    "php":">=7.4",
     "contao/core-bundle":"^4.4",
     "alnv/catalog-manager":"^1.31"
   },

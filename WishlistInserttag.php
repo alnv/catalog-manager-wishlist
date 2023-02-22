@@ -2,26 +2,21 @@
 
 namespace CMWishlist;
 
-class WishlistInserttag extends \Frontend {
+class WishlistInserttag extends \Frontend
+{
 
-    protected function getSession() {
-
-        if (version_compare('4.4', VERSION, '<=')) {
-            return \System::getContainer()->get('session');
-        }
-        return \Session::getInstance();
-    }
-
-    public function getInsertTagValue($strTag) {
+    public function getInsertTagValue($strTag)
+    {
 
         $arrTables = [];
         $arrTags = explode('::', $strTag);
 
-        if ( empty($arrTags) || !is_array($arrTags)) {
+        if (empty($arrTags) || !is_array($arrTags)) {
             return false;
         }
 
-        if (isset($arrTags[0]) && $arrTags[0] == 'WISHLIST') {
+
+        if (isset($arrTags[0]) && ($arrTags[0] == 'WISHLIST' || $arrTags[0] == 'WISHLIST_PERSIST')) {
 
             $arrSettings = [
                 'noJoins' => false,
@@ -29,10 +24,15 @@ class WishlistInserttag extends \Frontend {
                 'template' => ''
             ];
 
-            $objWishlistView = new WishlistView();
-            $arrChunks = explode('?', urldecode($arrTags[2]??''), 2);
-            $strSource = \StringUtil::decodeEntities($arrChunks[1]??'');
-            $strSource = str_replace( '[&]', '&', $strSource );
+            $blnPersist = $arrTags[0] == 'WISHLIST_PERSIST';
+
+            $objWishlistView = new WishlistView([
+                'persist' => $blnPersist
+            ]);
+
+            $arrChunks = explode('?', urldecode($arrTags[2] ?? ''), 2);
+            $strSource = \StringUtil::decodeEntities($arrChunks[1] ?? '');
+            $strSource = str_replace('[&]', '&', $strSource);
             $arrParams = explode('&', $strSource);
 
             if (!empty(array_filter($arrParams))) {
@@ -65,10 +65,13 @@ class WishlistInserttag extends \Frontend {
             return $objWishlistView->render($arrSettings);
         }
 
-        if ( isset( $arrTags[0] ) && $arrTags[0] == 'WISHLIST_AMOUNT' && $arrTags[1] ) {
+        if (isset($arrTags[0]) && ($arrTags[0] == 'WISHLIST_AMOUNT' || $arrTags[0] == 'WISHLIST_PERSIST_AMOUNT') && $arrTags[1]) {
+
             $numReturn = 0;
-            $objSession = $this->getSession();
-            $arrTables = $objSession->get('wishlist_tables');
+            $blnPersist = $arrTags[0] == 'WISHLIST_PERSIST_AMOUNT';
+
+            $objStorage = new \CMWishlist\Storage($blnPersist);
+            $arrTables = $objStorage->getTables();
 
             if (!\Database::getInstance()->tableExists($arrTags[1])) {
                 return $numReturn;
@@ -76,7 +79,7 @@ class WishlistInserttag extends \Frontend {
 
             if (!is_array($arrTables)) $arrTables = [];
             if (in_array($arrTags[1], $arrTables)) {
-                $arrValue = $objSession->get( 'wishlist_' . $arrTags[1]);
+                $arrValue = $objStorage->getByTable($arrTags[1]);
                 if (isset($arrValue['ids'])) {
                     foreach ($arrValue['ids'] as $strId) {
                         if (\Database::getInstance()->prepare('SELECT * FROM ' . $arrTags[1] . ' WHERE id=? AND invisible!=?')->limit(1)->execute($strId, '1')->numRows) {
