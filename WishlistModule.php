@@ -232,7 +232,7 @@ class WishlistModule extends CatalogController
 
         if (!Toolkit::isEmpty($arrSession)) {
 
-            $arrIds = $arrSession['ids'];
+            $arrIds = $arrSession['ids'] ?? [];
             $arrAmounts = $arrSession['amounts'];
         }
 
