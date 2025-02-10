@@ -2,16 +2,21 @@
 
 namespace CMWishlist;
 
+use Contao\System;
+use Contao\FrontendUser;
+use Contao\Database;
+
 class Storage
 {
 
     protected $strUserId = null;
+
     protected $blnPersist = false;
 
     public function __construct($blnPersist = false)
     {
 
-        $this->strUserId = \FrontendUser::getInstance()->id;
+        $this->strUserId = FrontendUser::getInstance()->id;
         $this->blnPersist = $blnPersist && $this->strUserId;
     }
 
@@ -22,8 +27,8 @@ class Storage
         switch ($this->blnPersist) {
             case true:
 
-                $objUser = \FrontendUser::getInstance();
-                $objDatabase = \Database::getInstance()->prepare('SELECT DISTINCT `table` FROM tl_catalog_wishlist WHERE pid=?')->execute($objUser->id);
+                $objUser = FrontendUser::getInstance();
+                $objDatabase = Database::getInstance()->prepare('SELECT DISTINCT `table` FROM tl_catalog_wishlist WHERE pid=?')->execute($objUser->id);
                 while ($objDatabase->next()) {
                     if (!in_array($objDatabase->table, $arrTables)) {
                         $arrTables[] = $objDatabase->table;
@@ -48,8 +53,8 @@ class Storage
         switch ($this->blnPersist) {
             case true:
 
-                $objUser = \FrontendUser::getInstance();
-                $objEntities = \Database::getInstance()
+                $objUser = FrontendUser::getInstance();
+                $objEntities = Database::getInstance()
                     ->prepare('SELECT * FROM tl_catalog_wishlist WHERE pid=? AND `table`=? ORDER BY created_at')
                     ->execute($objUser->id, $strTable);
 
@@ -85,8 +90,8 @@ class Storage
             return null;
         }
 
-        $objUser = \FrontendUser::getInstance();
-        \Database::getInstance()
+        $objUser = FrontendUser::getInstance();
+        Database::getInstance()
             ->prepare('DELETE FROM tl_catalog_wishlist WHERE pid=? AND `table`=? AND `identifier`=?')
             ->execute($objUser->id, $strTable, $strIdentifier);
     }
@@ -96,19 +101,19 @@ class Storage
         switch ($this->blnPersist) {
             case true:
 
-                $objUser = \FrontendUser::getInstance();
+                $objUser = FrontendUser::getInstance();
                 $arrIds = $arrData['ids'] ?? [];
 
                 foreach ($arrIds as $strId) {
 
-                    $objEntity = \Database::getInstance()
+                    $objEntity = Database::getInstance()
                         ->prepare('SELECT * FROM tl_catalog_wishlist WHERE pid=? AND `table`=? AND `identifier`=?')
                         ->limit(1)
                         ->execute($objUser->id, $strTable, $strId);
 
                     if ($objEntity->numRows) {
 
-                        \Database::getInstance()
+                        Database::getInstance()
                             ->prepare('UPDATE tl_catalog_wishlist %s WHERE id=?')
                             ->set([
                                 'tstamp' => time(),
@@ -118,7 +123,7 @@ class Storage
                             ->execute($objEntity->id);
                     } else {
 
-                        \Database::getInstance()->prepare('INSERT INTO tl_catalog_wishlist %s')->set(
+                        Database::getInstance()->prepare('INSERT INTO tl_catalog_wishlist %s')->set(
                             [
                                 'tstamp' => time(),
                                 'created_at' => time(),
@@ -154,7 +159,6 @@ class Storage
 
     protected function getSession()
     {
-
-        return \System::getContainer()->get('session');
+        return System::getContainer()->get('session');
     }
 }

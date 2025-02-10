@@ -2,7 +2,11 @@
 
 namespace CMWishlist;
 
-class WishlistInserttag extends \Frontend
+use Contao\Frontend;
+use Contao\StringUtil;
+use Contao\Database;
+
+class WishlistInserttag extends Frontend
 {
 
     public function getInsertTagValue($strTag)
@@ -31,7 +35,7 @@ class WishlistInserttag extends \Frontend
             ]);
 
             $arrChunks = explode('?', urldecode($arrTags[2] ?? ''), 2);
-            $strSource = \StringUtil::decodeEntities($arrChunks[1] ?? '');
+            $strSource = StringUtil::decodeEntities($arrChunks[1] ?? '');
             $strSource = str_replace('[&]', '&', $strSource);
             $arrParams = explode('&', $strSource);
 
@@ -70,10 +74,10 @@ class WishlistInserttag extends \Frontend
             $numReturn = 0;
             $blnPersist = $arrTags[0] == 'WISHLIST_PERSIST_AMOUNT';
 
-            $objStorage = new \CMWishlist\Storage($blnPersist);
+            $objStorage = new Storage($blnPersist);
             $arrTables = $objStorage->getTables();
 
-            if (!\Database::getInstance()->tableExists($arrTags[1])) {
+            if (!Database::getInstance()->tableExists($arrTags[1])) {
                 return $numReturn;
             }
 
@@ -82,7 +86,7 @@ class WishlistInserttag extends \Frontend
                 $arrValue = $objStorage->getByTable($arrTags[1]);
                 if (isset($arrValue['ids'])) {
                     foreach ($arrValue['ids'] as $strId) {
-                        if (\Database::getInstance()->prepare('SELECT * FROM ' . $arrTags[1] . ' WHERE id=? AND invisible!=?')->limit(1)->execute($strId, '1')->numRows) {
+                        if (Database::getInstance()->prepare('SELECT * FROM ' . $arrTags[1] . ' WHERE id=? AND invisible!=?')->limit(1)->execute($strId, '1')->numRows) {
                             $numReturn = $numReturn + 1;
                         }
                     }

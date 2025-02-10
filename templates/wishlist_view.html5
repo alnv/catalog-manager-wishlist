@@ -1,19 +1,19 @@
-<?php foreach( $this->data as $arrData ): ?>
+<?php foreach ($this->data as $arrData): ?>
     <p><?= $arrData['table']['headline'] ?></p>
     <table>
         <thead>
-            <tr>
-                <th><?= $arrData['table']['titleLabel'] ?></th>
-                <th><?= $arrData['table']['amountLabel'] ?></th>
-            </tr>
+        <tr>
+            <th><?= $arrData['table']['titleLabel'] ?></th>
+            <th><?= $arrData['table']['amountLabel'] ?></th>
+        </tr>
         </thead>
         <tbody>
-            <?php foreach( $arrData['rows'] as $arrRow ): ?>
-                <tr>
-                    <td><?= $arrRow['title'] ?></td>
-                    <td><?= $arrRow['wishlistAmountValue'] ?></td>
-                </tr>
-            <?php endforeach; ?>
+        <?php foreach ($arrData['rows'] as $arrRow): ?>
+            <tr>
+                <td><?= $arrRow['title'] ?></td>
+                <td><?= $arrRow['wishlistAmountValue'] ?></td>
+            </tr>
+        <?php endforeach; ?>
         </tbody>
     </table>
 <?php endforeach; ?>

@@ -18,9 +18,9 @@
     "wiki": "https://catalog-manager.org/dokumentation/catalog-manager-wunschliste.html"
   },
   "require": {
-    "php":">=7.4",
-    "contao/core-bundle":"^4.4",
-    "alnv/catalog-manager":"^1.31"
+    "php":">=8.0",
+    "contao/core-bundle": "~4.13 || ~5.3",
+    "alnv/catalog-manager":"^2.0"
   },
   "replace": {
     "contao-legacy/catalog-manager-wishlist": "self.version"

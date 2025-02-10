@@ -2,8 +2,12 @@
 
 namespace CMWishlist;
 
-use CatalogManager\CatalogController;
-use CatalogManager\Toolkit;
+use Alnv\CatalogManagerBundle\CatalogController;
+use Alnv\CatalogManagerBundle\Toolkit;
+use Contao\Input;
+use Contao\FrontendTemplate;
+use Contao\Environment;
+use Contao\Controller;
 
 class WishlistModule extends CatalogController
 {
@@ -37,11 +41,11 @@ class WishlistModule extends CatalogController
             $GLOBALS['TL_JAVASCRIPT']['wishlistJs'] = 'system/modules/catalog-manager-wishlist/assets/wishlist.js';
         }
 
-        if ($this->blnUseWishlist && \Input::get('wishlist_type')) {
+        if ($this->blnUseWishlist && Input::get('wishlist_type')) {
 
             if (!$this->validateInput()) return null;
 
-            $objStorage = new \CMWishlist\Storage($this->blnPersist);
+            $objStorage = new Storage($this->blnPersist);
             $arrTables = $objStorage->getTables();
 
             if (!is_array($arrTables)) $arrTables = [];
@@ -53,20 +57,16 @@ class WishlistModule extends CatalogController
 
             $objStorage->setTables($arrTables);
 
-            switch (\Input::get('wishlist_type')) {
+            switch (Input::get('wishlist_type')) {
 
                 case 'add_to_wishlist':
-
                     $this->addToWishlist();
                     $this->request($objCatalogView);
-
                     break;
 
                 case 'remove_from_wishlist':
-
                     $this->removeFromWishlist();
                     $this->request($objCatalogView);
-
                     break;
             }
         }
@@ -83,7 +83,7 @@ class WishlistModule extends CatalogController
             $blnInWishlist = false;
             $this->blnPersist = (bool) $objCatalogView->wishlistPersistStorage;
 
-            $objStorage = new \CMWishlist\Storage($this->blnPersist);
+            $objStorage = new Storage($this->blnPersist);
             $arrSession = $objStorage->getByTable($strTablename);
 
             if (!Toolkit::isEmpty($arrSession)) {
@@ -124,7 +124,7 @@ class WishlistModule extends CatalogController
                 $strTemplate = 'wishlist_form_table';
             }
 
-            $objTemplate = new \FrontendTemplate($strTemplate);
+            $objTemplate = new FrontendTemplate($strTemplate);
             $objTemplate->setData($arrCatalog);
 
             $arrCatalog['wishlistForm'] = $objTemplate->parse();
@@ -138,7 +138,7 @@ class WishlistModule extends CatalogController
 
         $this->blnPersist = (bool) $objCatalogView->wishlistPersistStorage;
 
-        $objStorage = new \CMWishlist\Storage($this->blnPersist);
+        $objStorage = new Storage($this->blnPersist);
         $arrSession = $objStorage->getByTable($objCatalogView->catalogTablename);
 
         if (Toolkit::isEmpty($arrSession)) $arrSession = ['ids' => ['0']];
@@ -156,26 +156,26 @@ class WishlistModule extends CatalogController
     protected function addToWishlist()
     {
 
-        $objStorage = new \CMWishlist\Storage($this->blnPersist);
+        $objStorage = new Storage($this->blnPersist);
         $objStorage->setData($this->strTable, $this->getWishlistData());
     }
 
     protected function removeFromWishlist()
     {
 
-        $objStorage = new \CMWishlist\Storage($this->blnPersist);
+        $objStorage = new Storage($this->blnPersist);
         $arrSession = $objStorage->getByTable($this->strTable);
 
         if (!Toolkit::isEmpty($arrSession)) {
 
             if (isset($arrSession['amounts'])) {
-                unset($arrSession['amounts'][\Input::get('wishlist_id')]);
+                unset($arrSession['amounts'][Input::get('wishlist_id')]);
             }
 
-            if (is_array($arrSession['ids']) && in_array(\Input::get('wishlist_id'), $arrSession['ids'])) {
-                $intKey = array_search(\Input::get('wishlist_id'), $arrSession['ids']);
+            if (is_array($arrSession['ids']) && in_array(Input::get('wishlist_id'), $arrSession['ids'])) {
+                $intKey = array_search(Input::get('wishlist_id'), $arrSession['ids']);
                 unset($arrSession['ids'][$intKey]);
-                $objStorage->removeData($this->strTable, \Input::get('wishlist_id'));
+                $objStorage->removeData($this->strTable, Input::get('wishlist_id'));
             }
 
             $objStorage->setData($this->strTable, $arrSession);
@@ -185,9 +185,9 @@ class WishlistModule extends CatalogController
     protected function request($objCatalogView)
     {
 
-        if (\Input::get('wishlist_ajax')) {
+        if (Input::get('wishlist_ajax')) {
 
-            $objEntity = $this->Database->prepare(sprintf('SELECT * FROM %s WHERE id=?', $this->strTable))->limit(1)->execute(\Input::get('wishlist_id'));
+            $objEntity = $this->Database->prepare(sprintf('SELECT * FROM %s WHERE id=?', $this->strTable))->limit(1)->execute(Input::get('wishlist_id'));
             $arrCatalog = $objEntity->row();
 
             $this->renderCatalog($arrCatalog, $this->strTable, $objCatalogView);
@@ -195,21 +195,21 @@ class WishlistModule extends CatalogController
             header('Content-Type: application/json');
 
             echo json_encode([
-                'id' => md5(\Input::get('wishlist_id') . $this->strTable),
+                'id' => md5(Input::get('wishlist_id') . $this->strTable),
                 'reload' => $arrCatalog['wishlistForm']
             ], 512);
 
             exit;
         }
 
-        $strRedirect = preg_replace('/[&,?]wishlist_type=remove_from_wishlist/', '', \Environment::get('request'));
+        $strRedirect = preg_replace('/[&,?]wishlist_type=remove_from_wishlist/', '', Environment::get('request'));
         $strRedirect = preg_replace('/[&,?]wishlist_type=add_to_wishlist/', '', $strRedirect);
         $strRedirect = preg_replace('/[&,?]wishlist_amount=[^&]*/i', '', $strRedirect);
         $strRedirect = preg_replace('/[&,?]wishlist_table=[^&]*/i', '', $strRedirect);
         $strRedirect = preg_replace('/[&,?]wishlist_ajax=[^&]*/i', '', $strRedirect);
         $strRedirect = preg_replace('/[&,?]wishlist_id=[^&]*/i', '', $strRedirect);
 
-        \Controller::redirect($strRedirect);
+        Controller::redirect($strRedirect);
     }
 
     protected function validateInput()
@@ -217,7 +217,7 @@ class WishlistModule extends CatalogController
 
         if (!$this->Database->tableExists($this->strTable)) return false;
 
-        $objRow = $this->Database->prepare(sprintf('SELECT id FROM %s WHERE id = ?', $this->strTable))->execute(\Input::get('wishlist_id'));
+        $objRow = $this->Database->prepare(sprintf('SELECT id FROM %s WHERE id = ?', $this->strTable))->execute(Input::get('wishlist_id'));
 
         return (bool) $objRow->numRows;
     }
@@ -227,7 +227,7 @@ class WishlistModule extends CatalogController
 
         $arrIds = [];
         $arrAmounts = [];
-        $objStorage = new \CMWishlist\Storage($this->blnPersist);
+        $objStorage = new Storage($this->blnPersist);
         $arrSession = $objStorage->getByTable($this->strTable);
 
         if (!Toolkit::isEmpty($arrSession)) {
@@ -236,14 +236,12 @@ class WishlistModule extends CatalogController
             $arrAmounts = $arrSession['amounts'];
         }
 
-        if (\Input::get('wishlist_id') && !in_array(\Input::get('wishlist_id'), $arrIds)) {
-
-            $arrIds[] = \Input::get('wishlist_id');
+        if (Input::get('wishlist_id') && !in_array(Input::get('wishlist_id'), $arrIds)) {
+            $arrIds[] = Input::get('wishlist_id');
         }
 
-        if (\Input::get('wishlist_id')) {
-
-            $arrAmounts[\Input::get('wishlist_id')] = \Input::get('wishlist_amount') ? \Input::get('wishlist_amount') : '1';
+        if (Input::get('wishlist_id')) {
+            $arrAmounts[Input::get('wishlist_id')] = Input::get('wishlist_amount') ? Input::get('wishlist_amount') : '1';
         }
 
         return [
