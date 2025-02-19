@@ -1,10 +1,11 @@
 <?php
 
-namespace CMWishlist;
 
-use Contao\System;
-use Contao\FrontendUser;
+namespace Alnv\CatalogManagerWishlistBundle\Library;
+
 use Contao\Database;
+use Contao\FrontendUser;
+use Contao\System;
 
 class Storage
 {
@@ -84,7 +85,8 @@ class Storage
         return $arrData;
     }
 
-    public function removeData($strTable, $strIdentifier) {
+    public function removeData($strTable, $strIdentifier)
+    {
 
         if (!$this->blnPersist) {
             return null;
@@ -96,7 +98,8 @@ class Storage
             ->execute($objUser->id, $strTable, $strIdentifier);
     }
 
-    public function setData($strTable, $arrData) {
+    public function setData($strTable, $arrData)
+    {
 
         switch ($this->blnPersist) {
             case true:
@@ -117,7 +120,7 @@ class Storage
                             ->prepare('UPDATE tl_catalog_wishlist %s WHERE id=?')
                             ->set([
                                 'tstamp' => time(),
-                                'units' => (int) $arrData['amounts'][$strId] ?? 1
+                                'units' => (int)$arrData['amounts'][$strId] ?? 1
                             ])
                             ->limit(1)
                             ->execute($objEntity->id);
@@ -127,7 +130,7 @@ class Storage
                             [
                                 'tstamp' => time(),
                                 'created_at' => time(),
-                                'units' => (int) $arrData['amounts'][$strId] ?? 1,
+                                'units' => (int)$arrData['amounts'][$strId] ?? 1,
                                 'table' => $strTable,
                                 'pid' => $objUser->id,
                                 'identifier' => $strId
@@ -144,7 +147,8 @@ class Storage
         }
     }
 
-    public function setTables($arrTables) {
+    public function setTables($arrTables)
+    {
 
         switch ($this->blnPersist) {
             case true:

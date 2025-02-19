@@ -1,10 +1,11 @@
 <?php
 
-namespace CMWishlist;
 
+namespace Alnv\CatalogManagerWishlistBundle\Library;
+
+use Contao\Database;
 use Contao\Frontend;
 use Contao\StringUtil;
-use Contao\Database;
 
 class WishlistInserttag extends Frontend
 {

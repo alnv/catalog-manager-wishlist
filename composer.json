@@ -13,7 +13,7 @@
     }
   ],
   "support": {
-    "email": "me@alexandernaumov.de",
+    "email": "mail@alexandernaumov.de",
     "issues": "https://github.com/alnv/catalog-manager-wishlist/issues",
     "wiki": "https://catalog-manager.org/dokumentation/catalog-manager-wunschliste.html"
   },
@@ -22,14 +22,15 @@
     "contao/core-bundle": "~4.13 || ~5.3",
     "alnv/catalog-manager":"^2.0"
   },
-  "replace": {
-    "contao-legacy/catalog-manager-wishlist": "self.version"
+  "autoload": {
+    "psr-4": {
+      "Alnv\\CatalogManagerWishlistBundle\\": "src/"
+    }
+  },
+  "config": {
+    "preferred-install": "dist"
   },
   "extra": {
-    "contao": {
-      "sources": {
-        "": "system/modules/catalog-manager-wishlist"
-      }
-    }
+    "contao-manager-plugin": "Alnv\\CatalogManagerWishlistBundle\\ContaoManager\\Plugin"
   }
 }

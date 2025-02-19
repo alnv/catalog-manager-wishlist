@@ -1,7 +1,7 @@
 <?php
 
-use CMWishlist\WishlistModule;
-use CMWishlist\WishlistInserttag;
+use Alnv\CatalogManagerWishlistBundle\Library\WishlistInserttag;
+use Alnv\CatalogManagerWishlistBundle\Library\WishlistModule;
 
 $GLOBALS['BE_MOD']['accounts']['member']['tables'][] = 'tl_catalog_wishlist';
 

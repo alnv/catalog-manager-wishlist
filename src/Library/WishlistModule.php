@@ -1,13 +1,14 @@
 <?php
 
-namespace CMWishlist;
+
+namespace Alnv\CatalogManagerWishlistBundle\Library;
 
 use Alnv\CatalogManagerBundle\CatalogController;
 use Alnv\CatalogManagerBundle\Toolkit;
-use Contao\Input;
-use Contao\FrontendTemplate;
-use Contao\Environment;
 use Contao\Controller;
+use Contao\Environment;
+use Contao\FrontendTemplate;
+use Contao\Input;
 
 class WishlistModule extends CatalogController
 {
@@ -29,16 +30,15 @@ class WishlistModule extends CatalogController
     {
 
         $this->strTable = $objCatalogView->catalogTablename;
-        $this->blnUseWishlist = (bool) $objCatalogView->wishlistWidget;
-        $this->blnPersist = (bool) $objCatalogView->wishlistPersistStorage;
+        $this->blnUseWishlist = (bool)$objCatalogView->wishlistWidget;
+        $this->blnPersist = (bool)$objCatalogView->wishlistPersistStorage;
 
         $objCatalogView->objMainTemplate->useWishlist = $this->blnUseWishlist;
         $objCatalogView->objMainTemplate->wishlistLabel = $GLOBALS['TL_LANG']['MSC']['CATALOG_MANAGER']['wishlist'];
         $objCatalogView->objMainTemplate->wishlistCss = $objCatalogView->wishlistEnableFilter ? ' filtered-wishlist' : '';
 
         if ($this->blnUseWishlist) {
-
-            $GLOBALS['TL_JAVASCRIPT']['wishlistJs'] = 'system/modules/catalog-manager-wishlist/assets/wishlist.js';
+            $GLOBALS['TL_JAVASCRIPT']['wishlistJs'] = 'bundles/alnvcatalogmanagerwishlist/wishlist.js';
         }
 
         if ($this->blnUseWishlist && Input::get('wishlist_type')) {
@@ -81,7 +81,7 @@ class WishlistModule extends CatalogController
             $this->intColIndex++;
             $strAmountValue = '1';
             $blnInWishlist = false;
-            $this->blnPersist = (bool) $objCatalogView->wishlistPersistStorage;
+            $this->blnPersist = (bool)$objCatalogView->wishlistPersistStorage;
 
             $objStorage = new Storage($this->blnPersist);
             $arrSession = $objStorage->getByTable($strTablename);
@@ -106,8 +106,8 @@ class WishlistModule extends CatalogController
             $arrCatalog['wishlistIndex'] = $this->intColIndex;
             $arrCatalog['useWishlist'] = $this->blnUseWishlist;
             $arrCatalog['wishlistID'] = md5($arrCatalog['id'] . $strTablename);
-            $arrCatalog['wishlistAmount'] = (bool) $objCatalogView->wishlistAmount;
-            $arrCatalog['wishlistDisableRemoveButton'] = (bool) $objCatalogView->wishlistDisableRemoveButton;
+            $arrCatalog['wishlistAmount'] = (bool)$objCatalogView->wishlistAmount;
+            $arrCatalog['wishlistDisableRemoveButton'] = (bool)$objCatalogView->wishlistDisableRemoveButton;
             $arrCatalog['wishlistPersistStorage'] = $this->blnPersist;
 
             if ($blnInWishlist && !$arrCatalog['wishlistAmount']) $arrCatalog['wishlistAddButton'] = false;
@@ -136,7 +136,7 @@ class WishlistModule extends CatalogController
 
         if (!$objCatalogView->wishlistEnableFilter) return $arrQuery;
 
-        $this->blnPersist = (bool) $objCatalogView->wishlistPersistStorage;
+        $this->blnPersist = (bool)$objCatalogView->wishlistPersistStorage;
 
         $objStorage = new Storage($this->blnPersist);
         $arrSession = $objStorage->getByTable($objCatalogView->catalogTablename);
@@ -219,7 +219,7 @@ class WishlistModule extends CatalogController
 
         $objRow = $this->Database->prepare(sprintf('SELECT id FROM %s WHERE id = ?', $this->strTable))->execute(Input::get('wishlist_id'));
 
-        return (bool) $objRow->numRows;
+        return (bool)$objRow->numRows;
     }
 
     protected function getWishlistData()
