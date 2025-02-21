@@ -163,6 +163,6 @@ class Storage
 
     protected function getSession()
     {
-        return System::getContainer()->get('session');
+        return System::getContainer()->get('request_stack')->getSession();
     }
 }

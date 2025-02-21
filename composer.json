@@ -18,8 +18,7 @@
     "wiki": "https://catalog-manager.org/dokumentation/catalog-manager-wunschliste.html"
   },
   "require": {
-    "php":">=8.0",
-    "contao/core-bundle": "~4.13 || ~5.3",
+    "contao/core-bundle": "~5.3",
     "alnv/catalog-manager":"^2.0"
   },
   "autoload": {

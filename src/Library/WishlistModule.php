@@ -6,6 +6,7 @@ namespace Alnv\CatalogManagerWishlistBundle\Library;
 use Alnv\CatalogManagerBundle\CatalogController;
 use Alnv\CatalogManagerBundle\Toolkit;
 use Contao\Controller;
+use Contao\Database;
 use Contao\Environment;
 use Contao\FrontendTemplate;
 use Contao\Input;
@@ -23,7 +24,6 @@ class WishlistModule extends CatalogController
     {
 
         parent::__construct();
-        $this->import('Database');
     }
 
     public function initialize(&$objCatalogView)
@@ -187,7 +187,7 @@ class WishlistModule extends CatalogController
 
         if (Input::get('wishlist_ajax')) {
 
-            $objEntity = $this->Database->prepare(sprintf('SELECT * FROM %s WHERE id=?', $this->strTable))->limit(1)->execute(Input::get('wishlist_id'));
+            $objEntity = Database::getInstance()->prepare(sprintf('SELECT * FROM %s WHERE id=?', $this->strTable))->limit(1)->execute(Input::get('wishlist_id'));
             $arrCatalog = $objEntity->row();
 
             $this->renderCatalog($arrCatalog, $this->strTable, $objCatalogView);
@@ -215,9 +215,9 @@ class WishlistModule extends CatalogController
     protected function validateInput()
     {
 
-        if (!$this->Database->tableExists($this->strTable)) return false;
+        if (!Database::getInstance()->tableExists($this->strTable)) return false;
 
-        $objRow = $this->Database->prepare(sprintf('SELECT id FROM %s WHERE id = ?', $this->strTable))->execute(Input::get('wishlist_id'));
+        $objRow = Database::getInstance()->prepare(sprintf('SELECT id FROM %s WHERE id = ?', $this->strTable))->execute(Input::get('wishlist_id'));
 
         return (bool)$objRow->numRows;
     }
