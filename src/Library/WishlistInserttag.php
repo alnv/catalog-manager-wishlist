@@ -14,14 +14,15 @@ class WishlistInserttag extends Frontend
     {
 
         $arrTables = [];
-        $arrTags = explode('::', $strTag);
+        $arrTags = \explode('::', $strTag);
 
-        if (empty($arrTags) || !is_array($arrTags)) {
+        if (empty($arrTags) || !\is_array($arrTags)) {
             return false;
         }
 
+        $strInsertTag = \strtoupper($arrTags[0] ?? '');
 
-        if (isset($arrTags[0]) && ($arrTags[0] == 'WISHLIST' || $arrTags[0] == 'WISHLIST_PERSIST')) {
+        if (($strInsertTag == 'WISHLIST' || $strInsertTag == 'WISHLIST_PERSIST')) {
 
             $arrSettings = [
                 'noJoins' => false,
@@ -29,7 +30,7 @@ class WishlistInserttag extends Frontend
                 'template' => ''
             ];
 
-            $blnPersist = $arrTags[0] == 'WISHLIST_PERSIST';
+            $blnPersist = $strInsertTag === 'WISHLIST_PERSIST';
 
             $objWishlistView = new WishlistView([
                 'persist' => $blnPersist
@@ -70,10 +71,10 @@ class WishlistInserttag extends Frontend
             return $objWishlistView->render($arrSettings);
         }
 
-        if (isset($arrTags[0]) && ($arrTags[0] == 'WISHLIST_AMOUNT' || $arrTags[0] == 'WISHLIST_PERSIST_AMOUNT') && $arrTags[1]) {
+        if (($strInsertTag == 'WISHLIST_AMOUNT' || $strInsertTag == 'WISHLIST_PERSIST_AMOUNT') && ($arrTags[1] ?? '')) {
 
             $numReturn = 0;
-            $blnPersist = $arrTags[0] == 'WISHLIST_PERSIST_AMOUNT';
+            $blnPersist = $strInsertTag == 'WISHLIST_PERSIST_AMOUNT';
 
             $objStorage = new Storage($blnPersist);
             $arrTables = $objStorage->getTables();
