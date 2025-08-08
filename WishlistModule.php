@@ -233,7 +233,7 @@ class WishlistModule extends CatalogController
         if (!Toolkit::isEmpty($arrSession)) {
 
             $arrIds = $arrSession['ids'] ?? [];
-            $arrAmounts = $arrSession['amounts'];
+            $arrAmounts = $arrSession['amounts'] ?? [];
         }
 
         if (\Input::get('wishlist_id') && !in_array(\Input::get('wishlist_id'), $arrIds)) {
