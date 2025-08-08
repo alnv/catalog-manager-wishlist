@@ -4,6 +4,8 @@ namespace CMWishlist;
 
 use CatalogManager\CatalogController;
 use CatalogManager\Toolkit;
+use Contao\CoreBundle\Exception\ResponseException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class WishlistModule extends CatalogController
 {
@@ -192,14 +194,10 @@ class WishlistModule extends CatalogController
 
             $this->renderCatalog($arrCatalog, $this->strTable, $objCatalogView);
 
-            header('Content-Type: application/json');
-
-            echo json_encode([
+            throw new ResponseException(new JsonResponse([
                 'id' => md5(\Input::get('wishlist_id') . $this->strTable),
                 'reload' => $arrCatalog['wishlistForm']
-            ], 512);
-
-            exit;
+            ]));
         }
 
         $strRedirect = preg_replace('/[&,?]wishlist_type=remove_from_wishlist/', '', \Environment::get('request'));
